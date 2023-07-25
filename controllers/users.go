@@ -150,7 +150,7 @@ func (c *UsersController) Put() {
 	logs.Debug("Date of birth", h.Dob)
 
 	// Parse request in Users object
-	v := models.Users{UserId: id, FullName: h.FullName, Gender: h.Gender, PhoneNumber: h.PhoneNumber, MaritalStatus: h.MaritalStatus}
+	v := models.Users{UserId: id, FullName: h.FullName, Gender: h.Gender, PhoneNumber: h.PhoneNumber, MaritalStatus: h.MaritalStatus, Address: h.Address}
 
 	// Convert dob string to date
 	dobm, error := time.Parse("2006-01-02 15:04:05.000", h.Dob)
