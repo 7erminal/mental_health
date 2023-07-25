@@ -12,23 +12,24 @@ import (
 )
 
 type Users struct {
-	UserId       int64     `orm:"auto" orm: "omitempty"`
-	UserType     int       `orm: "omitempty"`
-	FullName     string    `orm:"size(255)"`
-	Password     string    `orm:"size(255)"`
-	Email        string    `orm:"size(255)" orm: "omitempty"`
-	PhoneNumber  string    `orm:"size(255)" orm: "omitempty"`
-	Gender       string    `orm:"size(10)" orm: "omitempty"`
-	Dob          time.Time `orm:"type(datetime)" orm: "omitempty"`
-	Address      string    `orm:"size(255)" orm: "omitempty"`
-	IdType       string    `orm:"size(5)" orm: "omitempty"`
-	IdNumber     string    `orm:"size(100)" orm: "omitempty"`
-	Active       int       `orm: "omitempty"`
-	IsVerified   bool      `orm: "omitempty"`
-	DateCreated  time.Time `orm:"type(datetime)" orm: "omitempty"`
-	DateModified time.Time `orm:"type(datetime)" orm: "omitempty"`
-	CreatedBy    int       `orm: "omitempty"`
-	ModifiedBy   int       `orm: "omitempty"`
+	UserId        int64     `orm:"auto" orm: "omitempty"`
+	UserType      int       `orm: "omitempty"`
+	FullName      string    `orm:"size(255)"`
+	Password      string    `orm:"size(255)"`
+	Email         string    `orm:"size(255)" orm: "omitempty"`
+	PhoneNumber   string    `orm:"size(255)" orm: "omitempty"`
+	Gender        string    `orm:"size(10)" orm: "omitempty"`
+	Dob           time.Time `orm:"type(datetime)" orm: "omitempty"`
+	Address       string    `orm:"size(255)" orm: "omitempty"`
+	IdType        string    `orm:"size(5)" orm: "omitempty"`
+	IdNumber      string    `orm:"size(100)" orm: "omitempty"`
+	MaritalStatus string    `orm:"size(255)" orm: "omitempty"`
+	Active        int       `orm: "omitempty"`
+	IsVerified    bool      `orm: "omitempty"`
+	DateCreated   time.Time `orm:"type(datetime)" orm: "omitempty"`
+	DateModified  time.Time `orm:"type(datetime)" orm: "omitempty"`
+	CreatedBy     int       `orm: "omitempty"`
+	ModifiedBy    int       `orm: "omitempty"`
 }
 
 func init() {
@@ -151,6 +152,7 @@ func GetAllUsers(query map[string]string, fields []string, sortby []string, orde
 // UpdateUsers updates Users by Id and returns error if
 // the record to be updated doesn't exist
 func UpdateUsersById(m *Users) (err error) {
+	logs.Debug("About to save", m.MaritalStatus)
 	o := orm.NewOrm()
 	v := Users{UserId: m.UserId}
 	// ascertain id exists in the database

@@ -6,7 +6,9 @@ import (
 	"mental_health_application/models"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/beego/beego/v2/core/logs"
 	beego "github.com/beego/beego/v2/server/web"
 )
 
@@ -129,19 +131,64 @@ func (c *UsersController) GetAll() {
 // @Title Put
 // @Description update the Users
 // @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Users	true		"body for Users content"
+// @Param	body		body 	models.UpdateUserRequestDTO	true		"body for Users content"
 // @Success 200 {object} models.Users
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *UsersController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.ParseInt(idStr, 0, 64)
-	v := models.Users{UserId: id}
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	if err := models.UpdateUsersById(&v); err == nil {
-		c.Data["json"] = "OK"
+	var h models.UpdateUserRequestDTO
+
+	// get the request
+	json.Unmarshal(c.Ctx.Input.RequestBody, &h)
+
+	logs.Debug("Marital status", h.MaritalStatus)
+	logs.Debug("Full Name", h.FullName)
+	logs.Debug("Gender", h.Gender)
+	logs.Debug("Phone number", h.PhoneNumber)
+	logs.Debug("Date of birth", h.Dob)
+
+	// Parse request in Users object
+	v := models.Users{UserId: id, FullName: h.FullName, Gender: h.Gender, PhoneNumber: h.PhoneNumber, MaritalStatus: h.MaritalStatus}
+
+	// Convert dob string to date
+	dobm, error := time.Parse("2006-01-02 15:04:05.000", h.Dob)
+
+	logs.Debug("Converted date", dobm)
+
+	if error != nil {
+		logs.Debug("Converted date error", error)
 	} else {
-		c.Data["json"] = err.Error()
+		// Assign dob
+		v.Dob = dobm
+	}
+
+	logs.Debug("About to save", v)
+	logs.Debug("DOB", dobm)
+	logs.Debug("is verified?", v.IsVerified)
+
+	if err := models.UpdateUsersById(&v); err == nil {
+		v, err := models.GetUsersById(v.UserId)
+
+		if err != nil {
+			c.Data["json"] = err.Error()
+
+			var resp = models.UserResponse{StatusCode: 601, User: nil, StatusDesc: "Error fetching user"}
+			c.Data["json"] = resp
+		} else {
+			logs.Debug("Returned user is", v)
+
+			var resp = models.UserResponse{StatusCode: 200, User: v, StatusDesc: "Profile updated successfully"}
+			c.Data["json"] = resp
+
+			// c.Data["json"] = v
+		}
+	} else {
+		// c.Data["json"] = err.Error()
+		logs.Debug("Error updating user", err.Error())
+		var resp = models.UserResponse{StatusCode: 200, User: nil, StatusDesc: "Error updating user"}
+		c.Data["json"] = resp
 	}
 	c.ServeJSON()
 }
