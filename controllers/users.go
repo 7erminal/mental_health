@@ -143,53 +143,76 @@ func (c *UsersController) Put() {
 	// get the request
 	json.Unmarshal(c.Ctx.Input.RequestBody, &h)
 
-	logs.Debug("Marital status", h.MaritalStatus)
-	logs.Debug("Full Name", h.FullName)
-	logs.Debug("Gender", h.Gender)
-	logs.Debug("Phone number", h.PhoneNumber)
-	logs.Debug("Date of birth", h.Dob)
+	logs.Debug("User id is ", id)
 
-	// Parse request in Users object
-	v := models.Users{UserId: id, FullName: h.FullName, Gender: h.Gender, PhoneNumber: h.PhoneNumber, MaritalStatus: h.MaritalStatus, Address: h.Address}
-
-	// Convert dob string to date
-	dobm, error := time.Parse("2006-01-02 15:04:05.000", h.Dob)
-
-	logs.Debug("Converted date", dobm)
-
-	if error != nil {
-		logs.Debug("Converted date error", error)
-	} else {
-		// Assign dob
-		v.Dob = dobm
-	}
+	v, err := models.GetUsersById(id)
 
 	logs.Debug("About to save", v)
-	logs.Debug("DOB", dobm)
-	logs.Debug("is verified?", v.IsVerified)
+	logs.Debug("And error is ", err)
 
-	if err := models.UpdateUsersById(&v); err == nil {
-		v, err := models.GetUsersById(v.UserId)
+	if err == nil {
+		logs.Debug("User fetched successfully")
 
-		if err != nil {
-			c.Data["json"] = err.Error()
+		logs.Debug("Marital status", h.MaritalStatus)
+		logs.Debug("Full Name", h.FullName)
+		logs.Debug("Gender", h.Gender)
+		logs.Debug("Phone number", h.PhoneNumber)
+		logs.Debug("Date of birth", h.Dob)
 
-			var resp = models.UserResponse{StatusCode: 601, User: nil, StatusDesc: "Error fetching user"}
-			c.Data["json"] = resp
+		// Parse request in Users object
+		// v := models.Users{UserId: id, FullName: h.FullName, Gender: h.Gender, PhoneNumber: h.PhoneNumber, MaritalStatus: h.MaritalStatus, Address: h.Address}
+
+		v.FullName = h.FullName
+		v.Gender = h.Gender
+		v.PhoneNumber = h.PhoneNumber
+		v.MaritalStatus = h.MaritalStatus
+		v.Address = h.Address
+		// Convert dob string to date
+		dobm, error := time.Parse("2006-01-02 15:04:05.000", h.Dob)
+
+		logs.Debug("Converted date", dobm)
+
+		if error != nil {
+			logs.Debug("Converted date error", error)
 		} else {
-			logs.Debug("Returned user is", v)
+			// Assign dob
+			v.Dob = dobm
+		}
 
-			var resp = models.UserResponse{StatusCode: 200, User: v, StatusDesc: "Profile updated successfully"}
+		logs.Debug("About to save", v)
+		logs.Debug("DOB", dobm)
+		logs.Debug("is verified?", v.IsVerified)
+
+		if err := models.UpdateUsersById(v); err == nil {
+			v, err := models.GetUsersById(v.UserId)
+
+			if err != nil {
+				c.Data["json"] = err.Error()
+
+				var resp = models.UserResponse{StatusCode: 601, User: nil, StatusDesc: "Error fetching user"}
+				c.Data["json"] = resp
+			} else {
+				logs.Debug("Returned user is", v)
+
+				var resp = models.UserResponse{StatusCode: 200, User: v, StatusDesc: "Profile updated successfully"}
+				c.Data["json"] = resp
+
+				// c.Data["json"] = v
+			}
+		} else {
+			// c.Data["json"] = err.Error()
+			logs.Debug("Error updating user", err.Error())
+			var resp = models.UserResponse{StatusCode: 200, User: nil, StatusDesc: "Error updating user"}
 			c.Data["json"] = resp
-
-			// c.Data["json"] = v
 		}
 	} else {
-		// c.Data["json"] = err.Error()
-		logs.Debug("Error updating user", err.Error())
+		logs.Debug("Error fetching user")
+
+		logs.Debug("Error updating user")
 		var resp = models.UserResponse{StatusCode: 200, User: nil, StatusDesc: "Error updating user"}
 		c.Data["json"] = resp
 	}
+
 	c.ServeJSON()
 }
 

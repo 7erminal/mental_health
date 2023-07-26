@@ -52,8 +52,11 @@ func AddUsers(m *Users) (id int64, err error) {
 // Id doesn't exist
 func GetUsersById(id int64) (v *Users, err error) {
 	o := orm.NewOrm()
+	logs.Debug("Received User ID: ", id)
 	v = &Users{UserId: id}
+	logs.Debug("user data", v)
 	if err = o.QueryTable(new(Users)).Filter("UserId", id).RelatedSel().One(v); err == nil {
+		logs.Debug("Printing ", v)
 		return v, nil
 	}
 	return nil, err

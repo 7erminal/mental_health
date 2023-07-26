@@ -12,6 +12,10 @@ import (
 
 func main() {
 	sqlConn, err := beego.AppConfig.String("sqlconn")
+
+	// log := logs.NewLogger(10000)
+	// log.SetLogger("file")
+
 	if err != nil {
 		logs.Error("%s", err)
 	}
