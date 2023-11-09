@@ -12,24 +12,24 @@ import (
 )
 
 type Users struct {
-	UserId        int64     `orm:"auto" orm: "omitempty"`
-	UserType      int       `orm: "omitempty"`
+	UserId        int64     `orm:"auto" orm:"omitempty"`
+	UserType      int       `orm:"omitempty"`
 	FullName      string    `orm:"size(255)"`
 	Password      string    `orm:"size(255)"`
-	Email         string    `orm:"size(255)" orm: "omitempty"`
-	PhoneNumber   string    `orm:"size(255)" orm: "omitempty"`
-	Gender        string    `orm:"size(10)" orm: "omitempty"`
-	Dob           time.Time `orm:"type(datetime)" orm: "omitempty"`
-	Address       string    `orm:"size(255)" orm: "omitempty"`
-	IdType        string    `orm:"size(5)" orm: "omitempty"`
-	IdNumber      string    `orm:"size(100)" orm: "omitempty"`
-	MaritalStatus string    `orm:"size(255)" orm: "omitempty"`
-	Active        int       `orm: "omitempty"`
-	IsVerified    bool      `orm: "omitempty"`
-	DateCreated   time.Time `orm:"type(datetime)" orm: "omitempty"`
-	DateModified  time.Time `orm:"type(datetime)" orm: "omitempty"`
-	CreatedBy     int       `orm: "omitempty"`
-	ModifiedBy    int       `orm: "omitempty"`
+	Email         string    `orm:"size(255)" orm:"omitempty"`
+	PhoneNumber   string    `orm:"size(255)" orm:"omitempty"`
+	Gender        string    `orm:"size(10)" orm:"omitempty"`
+	Dob           time.Time `orm:"type(datetime)" orm:"omitempty"`
+	Address       string    `orm:"size(255)" orm:"omitempty"`
+	IdType        string    `orm:"size(5)" orm:"omitempty"`
+	IdNumber      string    `orm:"size(100)" orm:"omitempty"`
+	MaritalStatus string    `orm:"size(255)" orm:"omitempty"`
+	Active        int       `orm:"omitempty"`
+	IsVerified    bool      `orm:"omitempty"`
+	DateCreated   time.Time `orm:"type(datetime)" orm:"omitempty"`
+	DateModified  time.Time `orm:"type(datetime)" orm:"omitempty"`
+	CreatedBy     int       `orm:"omitempty"`
+	ModifiedBy    int       `orm:"omitempty"`
 }
 
 func init() {
